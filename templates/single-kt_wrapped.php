@@ -47,6 +47,14 @@ $slide_duration = static function (string $type): int {
 			return 5800;
 		case 'ranking_list':
 			return 7600;
+		case 'music_top_cards':
+			return 7000;
+		case 'music_chart_week':
+			return 8600;
+		case 'music_top_grid':
+			return 7200;
+		case 'music_spotlight':
+			return 7600;
 		case 'quote':
 			return 6200;
 		case 'final_share':

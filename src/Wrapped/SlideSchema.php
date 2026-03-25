@@ -8,13 +8,17 @@ final class SlideSchema
 	public static function supported_types(): array
 	{
 		return array(
-			'cover'        => __('Cover', 'kontentainment-wrapped'),
-			'big_number'   => __('Big Number', 'kontentainment-wrapped'),
-			'ranking_list' => __('Ranking List', 'kontentainment-wrapped'),
-			'spotlight'    => __('Spotlight', 'kontentainment-wrapped'),
-			'quote'        => __('Quote', 'kontentainment-wrapped'),
-			'mosaic'       => __('Mosaic', 'kontentainment-wrapped'),
-			'final_share'  => __('Final Share', 'kontentainment-wrapped'),
+			'cover'             => __('Cover', 'kontentainment-wrapped'),
+			'big_number'        => __('Big Number', 'kontentainment-wrapped'),
+			'ranking_list'      => __('Ranking List', 'kontentainment-wrapped'),
+			'spotlight'         => __('Spotlight', 'kontentainment-wrapped'),
+			'quote'             => __('Quote', 'kontentainment-wrapped'),
+			'mosaic'            => __('Mosaic', 'kontentainment-wrapped'),
+			'music_top_cards'   => __('Music Top Cards', 'kontentainment-wrapped'),
+			'music_chart_week'  => __('Music Chart Week', 'kontentainment-wrapped'),
+			'music_top_grid'    => __('Music Top Grid', 'kontentainment-wrapped'),
+			'music_spotlight'   => __('Music Spotlight', 'kontentainment-wrapped'),
+			'final_share'       => __('Final Share', 'kontentainment-wrapped'),
 		);
 	}
 
@@ -85,6 +89,63 @@ final class SlideSchema
 						array('title' => __('Moment Four', 'kontentainment-wrapped'), 'label' => __('Impact', 'kontentainment-wrapped')),
 					),
 				);
+			case 'music_top_cards':
+				return array(
+					'section_title' => __('On Repeat Right Now', 'kontentainment-wrapped'),
+					'subtitle'      => __('Three featured tracks setting the pace this week.', 'kontentainment-wrapped'),
+					'cards'         => array(
+						array(
+							'image_id'    => 0,
+							'track_title' => __('Midnight Signal', 'kontentainment-wrapped'),
+							'artist_name' => __('Luna District', 'kontentainment-wrapped'),
+							'link'        => '',
+							'badge'       => __('Top Pick', 'kontentainment-wrapped'),
+						),
+						array(
+							'image_id'    => 0,
+							'track_title' => __('Velvet Echo', 'kontentainment-wrapped'),
+							'artist_name' => __('Kairo Bloom', 'kontentainment-wrapped'),
+							'link'        => '',
+							'badge'       => __('New', 'kontentainment-wrapped'),
+						),
+						array(
+							'image_id'    => 0,
+							'track_title' => __('Static Hearts', 'kontentainment-wrapped'),
+							'artist_name' => __('After Hours Club', 'kontentainment-wrapped'),
+							'link'        => '',
+							'badge'       => __('Weekend', 'kontentainment-wrapped'),
+						),
+					),
+				);
+			case 'music_chart_week':
+				return array(
+					'chart_title' => __('Top Tracks of the Week', 'kontentainment-wrapped'),
+					'date_range'  => __('March 18 — March 24', 'kontentainment-wrapped'),
+					'items'       => array(
+						array('image_id' => 0, 'title' => __('Neon City', 'kontentainment-wrapped'), 'subtitle' => __('Mina Vale', 'kontentainment-wrapped'), 'trend_type' => 'up', 'trend_value' => '+3'),
+						array('image_id' => 0, 'title' => __('Afterglow FM', 'kontentainment-wrapped'), 'subtitle' => __('The Gloss', 'kontentainment-wrapped'), 'trend_type' => 'same', 'trend_value' => ''),
+						array('image_id' => 0, 'title' => __('Sleepless Coast', 'kontentainment-wrapped'), 'subtitle' => __('Juno Lines', 'kontentainment-wrapped'), 'trend_type' => 'new', 'trend_value' => __('NEW', 'kontentainment-wrapped')),
+						array('image_id' => 0, 'title' => __('Blue Static', 'kontentainment-wrapped'), 'subtitle' => __('Rafi Cole', 'kontentainment-wrapped'), 'trend_type' => 'down', 'trend_value' => '-2'),
+					),
+				);
+			case 'music_top_grid':
+				return array(
+					'grid_title' => __('Top 10 Right Now', 'kontentainment-wrapped'),
+					'subtitle'   => __('A visual stack of the names dominating the moment.', 'kontentainment-wrapped'),
+					'items'      => array(
+						array('image_id' => 0, 'title' => __('Astra Lane', 'kontentainment-wrapped'), 'subtitle' => __('Artist', 'kontentainment-wrapped')),
+						array('image_id' => 0, 'title' => __('Night Shift', 'kontentainment-wrapped'), 'subtitle' => __('Track', 'kontentainment-wrapped')),
+						array('image_id' => 0, 'title' => __('Studio North', 'kontentainment-wrapped'), 'subtitle' => __('Podcast', 'kontentainment-wrapped')),
+						array('image_id' => 0, 'title' => __('Cloudline', 'kontentainment-wrapped'), 'subtitle' => __('Creator', 'kontentainment-wrapped')),
+					),
+				);
+			case 'music_spotlight':
+				return array(
+					'kicker'          => __('Artist Spotlight', 'kontentainment-wrapped'),
+					'image_id'        => 0,
+					'highlight_stat'  => __('12 Weeks Charting', 'kontentainment-wrapped'),
+					'description'     => __('Give this feature one sharp editorial reason to care right now.', 'kontentainment-wrapped'),
+				);
 			case 'final_share':
 				return array(
 					'replay_label' => __('Replay Story', 'kontentainment-wrapped'),
@@ -133,6 +194,30 @@ final class SlideSchema
 					'subtitle'  => __('Curate a set of standout moments.', 'kontentainment-wrapped'),
 					'body_text' => '',
 				);
+			case 'music_top_cards':
+				return array(
+					'title'     => __('This Week’s Essential Plays', 'kontentainment-wrapped'),
+					'subtitle'  => __('Feature the three cards that set the mood instantly.', 'kontentainment-wrapped'),
+					'body_text' => __('Keep the copy minimal and let the cards do the work.', 'kontentainment-wrapped'),
+				);
+			case 'music_chart_week':
+				return array(
+					'title'     => __('Top Tracks of the Week', 'kontentainment-wrapped'),
+					'subtitle'  => __('Rank the titles driving the conversation right now.', 'kontentainment-wrapped'),
+					'body_text' => __('Use trend indicators to make movement feel alive.', 'kontentainment-wrapped'),
+				);
+			case 'music_top_grid':
+				return array(
+					'title'     => __('Top 10 This Week', 'kontentainment-wrapped'),
+					'subtitle'  => __('Build a fast, visual grid of the names worth knowing.', 'kontentainment-wrapped'),
+					'body_text' => '',
+				);
+			case 'music_spotlight':
+				return array(
+					'title'     => __('The Track Owning the Weekend', 'kontentainment-wrapped'),
+					'subtitle'  => __('One featured release with a hero-level payoff.', 'kontentainment-wrapped'),
+					'body_text' => __('Explain why this record, artist, or album became the moment.', 'kontentainment-wrapped'),
+				);
 			case 'final_share':
 				return array(
 					'title'     => __('That was your Wrapped', 'kontentainment-wrapped'),
@@ -157,6 +242,10 @@ final class SlideSchema
 			'spotlight'    => __('Treat this like a hero profile with one standout angle.', 'kontentainment-wrapped'),
 			'quote'        => __('Write like an editorial pull quote, not a paragraph.', 'kontentainment-wrapped'),
 			'mosaic'       => __('Curate moments that feel varied but connected.', 'kontentainment-wrapped'),
+			'music_top_cards'  => __('Think of these as collectible music cards: bold image, clean title, sharp artist line.', 'kontentainment-wrapped'),
+			'music_chart_week' => __('Use movement, date range, and clear ranking to make the chart feel current.', 'kontentainment-wrapped'),
+			'music_top_grid'   => __('Keep titles short so the two-column layout stays clean on mobile.', 'kontentainment-wrapped'),
+			'music_spotlight'  => __('Treat this like a cover star moment with one standout stat and one short reason why.', 'kontentainment-wrapped'),
 			'final_share'  => __('End with a clear emotional wrap-up and strong call to share or replay.', 'kontentainment-wrapped'),
 		);
 	}
@@ -192,7 +281,7 @@ final class SlideSchema
 		$errors = array();
 		$type   = (string) ($slide['type'] ?? 'cover');
 
-		if (empty($slide['title']) && in_array($type, array('cover', 'big_number', 'ranking_list', 'spotlight', 'quote', 'mosaic', 'final_share'), true)) {
+		if (empty($slide['title']) && in_array($type, array('cover', 'big_number', 'ranking_list', 'spotlight', 'quote', 'mosaic', 'music_top_cards', 'music_chart_week', 'music_top_grid', 'music_spotlight', 'final_share'), true)) {
 			$errors[] = __('Title is required.', 'kontentainment-wrapped');
 		}
 
@@ -202,6 +291,22 @@ final class SlideSchema
 
 		if ('mosaic' === $type && empty($slide['config']['items'])) {
 			$errors[] = __('Add at least two mosaic cards.', 'kontentainment-wrapped');
+		}
+
+		if ('music_top_cards' === $type && empty($slide['config']['cards'])) {
+			$errors[] = __('Add at least one featured music card.', 'kontentainment-wrapped');
+		}
+
+		if ('music_chart_week' === $type && empty($slide['config']['items'])) {
+			$errors[] = __('Add chart rows for this week’s ranking.', 'kontentainment-wrapped');
+		}
+
+		if ('music_top_grid' === $type && count((array) ($slide['config']['items'] ?? array())) < 2) {
+			$errors[] = __('Add at least two grid items.', 'kontentainment-wrapped');
+		}
+
+		if ('music_spotlight' === $type && empty($slide['config']['description']) && empty($slide['body_text'])) {
+			$errors[] = __('Music Spotlight slides should include a short description.', 'kontentainment-wrapped');
 		}
 
 		if ('big_number' === $type && empty($slide['title'])) {
@@ -261,6 +366,90 @@ final class SlideSchema
 						}
 					)
 				);
+				break;
+			case 'music_top_cards':
+				$cards = isset($config['cards']) && is_array($config['cards']) ? $config['cards'] : array();
+				$sanitized['section_title'] = sanitize_text_field((string) ($config['section_title'] ?? ''));
+				$sanitized['subtitle']      = sanitize_text_field((string) ($config['subtitle'] ?? ''));
+				$sanitized['cards']         = array_values(
+					array_filter(
+						array_map(
+							static function ($item): array {
+								$item = is_array($item) ? $item : array();
+								return array(
+									'image_id'    => absint($item['image_id'] ?? 0),
+									'track_title' => sanitize_text_field((string) ($item['track_title'] ?? '')),
+									'artist_name' => sanitize_text_field((string) ($item['artist_name'] ?? '')),
+									'link'        => esc_url_raw((string) ($item['link'] ?? '')),
+									'badge'       => sanitize_text_field((string) ($item['badge'] ?? '')),
+								);
+							},
+							$cards
+						),
+						static function (array $item): bool {
+							return '' !== $item['track_title'];
+						}
+					)
+				);
+				break;
+			case 'music_chart_week':
+				$items = isset($config['items']) && is_array($config['items']) ? $config['items'] : array();
+				$sanitized['chart_title'] = sanitize_text_field((string) ($config['chart_title'] ?? ''));
+				$sanitized['date_range']  = sanitize_text_field((string) ($config['date_range'] ?? ''));
+				$sanitized['items']       = array_values(
+					array_filter(
+						array_map(
+							static function ($item): array {
+								$item       = is_array($item) ? $item : array();
+								$trend_type = sanitize_key((string) ($item['trend_type'] ?? 'same'));
+								if (! in_array($trend_type, array('new', 'up', 'down', 'same'), true)) {
+									$trend_type = 'same';
+								}
+
+								return array(
+									'image_id'    => absint($item['image_id'] ?? 0),
+									'title'       => sanitize_text_field((string) ($item['title'] ?? '')),
+									'subtitle'    => sanitize_text_field((string) ($item['subtitle'] ?? '')),
+									'trend_type'  => $trend_type,
+									'trend_value' => sanitize_text_field((string) ($item['trend_value'] ?? '')),
+								);
+							},
+							$items
+						),
+						static function (array $item): bool {
+							return '' !== $item['title'];
+						}
+					)
+				);
+				break;
+			case 'music_top_grid':
+				$items = isset($config['items']) && is_array($config['items']) ? $config['items'] : array();
+				$sanitized['grid_title'] = sanitize_text_field((string) ($config['grid_title'] ?? ''));
+				$sanitized['subtitle']   = sanitize_text_field((string) ($config['subtitle'] ?? ''));
+				$sanitized['items']      = array_values(
+					array_filter(
+						array_map(
+							static function ($item): array {
+								$item = is_array($item) ? $item : array();
+								return array(
+									'image_id' => absint($item['image_id'] ?? 0),
+									'title'    => sanitize_text_field((string) ($item['title'] ?? '')),
+									'subtitle' => sanitize_text_field((string) ($item['subtitle'] ?? '')),
+								);
+							},
+							$items
+						),
+						static function (array $item): bool {
+							return '' !== $item['title'];
+						}
+					)
+				);
+				break;
+			case 'music_spotlight':
+				$sanitized['kicker']         = sanitize_text_field((string) ($config['kicker'] ?? ''));
+				$sanitized['image_id']       = absint($config['image_id'] ?? 0);
+				$sanitized['highlight_stat'] = sanitize_text_field((string) ($config['highlight_stat'] ?? ''));
+				$sanitized['description']    = sanitize_text_field((string) ($config['description'] ?? ''));
 				break;
 			default:
 				foreach ($config as $key => $value) {

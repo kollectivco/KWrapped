@@ -1,6 +1,6 @@
 === Kontentainment Wrapped ===
 Contributors: kollectivco
-Stable tag: 1.0.2
+Stable tag: 1.1.0
 Requires at least: 6.0
 Tested up to: 6.6
 Requires PHP: 7.4
@@ -20,6 +20,14 @@ Kontentainment Wrapped is a standalone WordPress plugin for creating curated, st
 3. Open `Kontentainment Wrapped` in the WordPress admin.
 
 == Changelog ==
+
+= 1.1.0 =
+* Added music-focused Wrapped slide types for top cards, chart week, top grid, and music spotlight.
+* Added structured authoring fields and viewer templates for premium music/chart story slides.
+
+= 1.0.3 =
+* Fixed the blank Kontentainment Wrapped Overview admin page by rendering a real dashboard.
+* Added overview stats, quick actions, getting started guidance, and empty-state messaging.
 
 = 1.0.2 =
 * Hardened GitHub updater release selection and package safety checks.

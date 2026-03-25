@@ -1,0 +1,40 @@
+name: Build Plugin Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Prepare plugin package
+        run: |
+          mkdir -p dist/kontentainment-wrapped
+          rsync -av \
+            --exclude '.git' \
+            --exclude '.github' \
+            --exclude '.DS_Store' \
+            --exclude 'dist' \
+            ./ dist/kontentainment-wrapped/
+
+      - name: Build release zip
+        run: |
+          cd dist
+          zip -r kontentainment-wrapped.zip kontentainment-wrapped
+
+      - name: Create or update GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/kontentainment-wrapped.zip
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

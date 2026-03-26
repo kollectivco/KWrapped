@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.1] - 2026-03-26
+
+### Added
+- Manual Check for Updates actions in the plugin overview and plugin row actions.
+- Release status details in the Overview page showing installed version, latest GitHub version, and update state.
+
+### Improved
+- WordPress plugin update transient handling now populates both available updates and no-update states for this plugin.
+- GitHub release refresh flow now supports manual cache bypass and cleaner status reporting.
+
 ## [1.2.0] - 2026-03-26
 
 ### Changed

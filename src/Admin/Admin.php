@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace KontentainmentWrapped\Admin;
 
+use KontentainmentWrapped\Core\GitHubUpdater;
 use WP_Query;
 
 final class Admin
@@ -11,6 +12,8 @@ final class Admin
 	{
 		add_action('admin_menu', array($this, 'menu'));
 		add_action('admin_head', array($this, 'admin_head'));
+		add_action('admin_action_kt_wrapped_check_updates', array($this, 'handle_manual_update_check'));
+		add_action('admin_notices', array($this, 'render_update_notice'));
 	}
 
 	public function menu(): void
@@ -63,6 +66,12 @@ final class Admin
 				'order'          => 'DESC',
 				'no_found_rows'  => true,
 			)
+		);
+		$updater = new GitHubUpdater();
+		$status  = $updater->get_status_snapshot();
+		$check_updates_url = wp_nonce_url(
+			admin_url('admin.php?action=kt_wrapped_check_updates'),
+			'kt_wrapped_manual_update_check'
 		);
 		?>
 		<div class="wrap kt-wrapped-overview">
@@ -151,19 +160,113 @@ final class Admin
 			<section class="kt-wrapped-overview-panel kt-wrapped-overview-panel--footer">
 				<div class="kt-wrapped-overview-panel__header">
 					<h2><?php esc_html_e('Release Status', 'kontentainment-wrapped'); ?></h2>
+					<p><?php esc_html_e('GitHub Releases remain the source of truth for WordPress updates.', 'kontentainment-wrapped'); ?></p>
 				</div>
-				<p>
-					<?php
-					echo esc_html(
-						sprintf(
-							/* translators: %s: plugin version */
-							__('Running Kontentainment Wrapped version %s. Publish updates through GitHub Releases using the packaged plugin ZIP.', 'kontentainment-wrapped'),
-							KT_WRAPPED_VERSION
-						)
-					);
-					?>
-				</p>
+				<div class="kt-wrapped-overview-update">
+					<div class="kt-wrapped-overview-update__meta">
+						<div class="kt-wrapped-overview-update__item">
+							<span><?php esc_html_e('Installed', 'kontentainment-wrapped'); ?></span>
+							<strong><?php echo esc_html($status['current_version']); ?></strong>
+						</div>
+						<div class="kt-wrapped-overview-update__item">
+							<span><?php esc_html_e('Latest GitHub Release', 'kontentainment-wrapped'); ?></span>
+							<strong><?php echo esc_html($status['latest_version'] ?: __('Unavailable', 'kontentainment-wrapped')); ?></strong>
+						</div>
+						<div class="kt-wrapped-overview-update__item">
+							<span><?php esc_html_e('Update Status', 'kontentainment-wrapped'); ?></span>
+							<strong>
+								<?php
+								if ($status['has_update']) {
+									esc_html_e('Update available', 'kontentainment-wrapped');
+								} elseif ('error' === $status['status']) {
+									esc_html_e('Check failed', 'kontentainment-wrapped');
+								} else {
+									esc_html_e('Up to date', 'kontentainment-wrapped');
+								}
+								?>
+							</strong>
+						</div>
+						<div class="kt-wrapped-overview-update__item">
+							<span><?php esc_html_e('Auto-updates', 'kontentainment-wrapped'); ?></span>
+							<strong><?php echo esc_html($status['auto_updates'] ? __('Available in Plugins screen', 'kontentainment-wrapped') : __('Unavailable', 'kontentainment-wrapped')); ?></strong>
+						</div>
+					</div>
+					<?php if (! empty($status['message'])) : ?>
+						<p class="kt-wrapped-overview-update__note"><?php echo esc_html($status['message']); ?></p>
+					<?php endif; ?>
+					<div class="kt-wrapped-overview__actions">
+						<a class="button button-primary button-hero" href="<?php echo esc_url($check_updates_url); ?>">
+							<?php esc_html_e('Check for Updates', 'kontentainment-wrapped'); ?>
+						</a>
+						<a class="button" href="<?php echo esc_url(admin_url('plugins.php')); ?>">
+							<?php esc_html_e('Manage Plugins', 'kontentainment-wrapped'); ?>
+						</a>
+					</div>
+				</div>
 			</section>
+		</div>
+		<?php
+	}
+
+	public function handle_manual_update_check(): void
+	{
+		if (! current_user_can('update_plugins')) {
+			wp_die(esc_html__('You are not allowed to check for plugin updates.', 'kontentainment-wrapped'));
+		}
+
+		check_admin_referer('kt_wrapped_manual_update_check');
+
+		$updater = new GitHubUpdater();
+		$result  = $updater->manual_check();
+		set_transient('kt_wrapped_update_notice_' . get_current_user_id(), $result, MINUTE_IN_SECONDS);
+
+		$redirect = add_query_arg(
+			array(
+				'page'                    => 'kt-wrapped-dashboard',
+				'kt_wrapped_update_notice' => 1,
+			),
+			admin_url('admin.php')
+		);
+
+		wp_safe_redirect($redirect);
+		exit;
+	}
+
+	public function render_update_notice(): void
+	{
+		if (! is_admin() || ! current_user_can('update_plugins')) {
+			return;
+		}
+
+		if (empty($_GET['kt_wrapped_update_notice'])) {
+			return;
+		}
+
+		$screen = function_exists('get_current_screen') ? get_current_screen() : null;
+		if (! $screen || false === strpos((string) $screen->id, 'kt-wrapped-dashboard')) {
+			return;
+		}
+
+		$notice = get_transient('kt_wrapped_update_notice_' . get_current_user_id());
+		if (empty($notice) || ! is_array($notice)) {
+			return;
+		}
+
+		delete_transient('kt_wrapped_update_notice_' . get_current_user_id());
+
+		$result  = sanitize_key((string) ($notice['result'] ?? 'current'));
+		$message = sanitize_text_field((string) ($notice['message'] ?? ''));
+		$class   = 'notice-info';
+
+		if ('update' === $result) {
+			$class = 'notice-success';
+		} elseif ('error' === $result) {
+			$class = 'notice-warning';
+		}
+		?>
+		<div class="notice <?php echo esc_attr($class); ?> is-dismissible">
+			<p><strong><?php esc_html_e('Kontentainment Wrapped updates', 'kontentainment-wrapped'); ?></strong></p>
+			<p><?php echo esc_html($message); ?></p>
 		</div>
 		<?php
 	}

@@ -3,7 +3,7 @@
  * Plugin Name: Kontentainment Wrapped
  * Plugin URI: https://github.com/kollectivco/KWrapped
  * Description: Premium story-driven wrapped editions for WordPress.
- * Version: 1.2.0
+ * Version: 1.2.1
  * Author: Codex
  * Update URI: https://github.com/kollectivco/KWrapped
  * Text Domain: kontentainment-wrapped
@@ -15,7 +15,7 @@ if (! defined('ABSPATH')) {
 	exit;
 }
 
-define('KT_WRAPPED_VERSION', '1.2.0');
+define('KT_WRAPPED_VERSION', '1.2.1');
 define('KT_WRAPPED_FILE', __FILE__);
 define('KT_WRAPPED_PATH', plugin_dir_path(__FILE__));
 define('KT_WRAPPED_URL', plugin_dir_url(__FILE__));

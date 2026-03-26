@@ -21,6 +21,7 @@
   let hintTimer = null;
   let isBusy = false;
   let finaleTimer = null;
+  const musicCardState = new WeakMap();
 
   function showToast(message) {
     if (!toast) return;
@@ -65,6 +66,74 @@
   function getCurrentDuration() {
     const current = getCurrentSlide();
     return current ? parseInt(current.dataset.slideDuration || '6500', 10) : 6500;
+  }
+
+  function stopMusicCardAutoplay(slider) {
+    const state = musicCardState.get(slider);
+    if (!state || !state.timer) return;
+    clearTimeout(state.timer);
+    state.timer = null;
+  }
+
+  function syncMusicCardSlider(slider, nextIndex) {
+    const state = musicCardState.get(slider);
+    if (!state) return;
+
+    const total = state.cards.length;
+    if (nextIndex < 0) {
+      state.index = total - 1;
+    } else if (nextIndex >= total) {
+      state.index = 0;
+    } else {
+      state.index = nextIndex;
+    }
+    state.track.style.transform = 'translate3d(calc(' + (state.index * -100) + '% - ' + (state.index * 12) + 'px), 0, 0)';
+
+    state.cards.forEach((card, cardIndex) => {
+      card.classList.toggle('is-active', cardIndex === state.index);
+    });
+
+    state.dots.forEach((dot, dotIndex) => {
+      dot.classList.toggle('is-active', dotIndex === state.index);
+    });
+
+    stopMusicCardAutoplay(slider);
+    const currentSlide = slider.closest('.kt-wrapped-slide');
+    const shouldAutoplay = slider.dataset.ktMusicCardsAutoplay === 'true' && !isPaused && currentSlide && currentSlide.classList.contains('is-active') && total > 1;
+    if (shouldAutoplay) {
+      state.timer = setTimeout(() => {
+        syncMusicCardSlider(slider, state.index + 1 >= total ? 0 : state.index + 1);
+      }, 2600);
+    }
+  }
+
+  function initMusicCardSliders() {
+    viewer.querySelectorAll('[data-kt-music-cards-slider]').forEach((slider) => {
+      if (musicCardState.has(slider)) return;
+
+      const track = slider.querySelector('.kt-wrapped-music-top-cards__track');
+      const cards = Array.from(slider.querySelectorAll('[data-kt-music-card]'));
+      const dots = Array.from(slider.querySelectorAll('[data-kt-music-cards-dot]'));
+      if (!track || cards.length === 0) return;
+
+      musicCardState.set(slider, { index: 0, track, cards, dots, timer: null });
+
+      let startX = 0;
+      slider.addEventListener('touchstart', (event) => {
+        startX = event.changedTouches[0].clientX;
+      }, { passive: true });
+
+      slider.addEventListener('touchend', (event) => {
+        const delta = event.changedTouches[0].clientX - startX;
+        if (Math.abs(delta) < 35) return;
+        syncMusicCardSlider(slider, musicCardState.get(slider).index + (delta < 0 ? 1 : -1));
+      });
+
+      slider.addEventListener('pointerenter', () => stopMusicCardAutoplay(slider));
+      slider.addEventListener('pointerleave', () => syncMusicCardSlider(slider, musicCardState.get(slider).index));
+
+      syncMusicCardSlider(slider, 0);
+    });
   }
 
   function syncControls() {
@@ -156,6 +225,16 @@
     syncProgress();
     preloadNearby(index);
     applySlideMood();
+    initMusicCardSliders();
+    viewer.querySelectorAll('[data-kt-music-cards-slider]').forEach((slider) => {
+      const state = musicCardState.get(slider);
+      if (!state) return;
+      if (slider.closest('.kt-wrapped-slide').classList.contains('is-active')) {
+        syncMusicCardSlider(slider, state.index);
+      } else {
+        stopMusicCardAutoplay(slider);
+      }
+    });
     startAutoplay();
   }
 
@@ -366,6 +445,20 @@
     const navZone = event.target.closest('[data-kt-nav]');
     const actionButton = event.target.closest('[data-kt-action]');
     const navButton = event.target.closest('[data-kt-button]');
+    const musicCardsButton = event.target.closest('[data-kt-music-cards-action]');
+
+    if (event.target.closest('[data-kt-nav-ignore]')) {
+      event.stopPropagation();
+    }
+
+    if (musicCardsButton) {
+      const slider = musicCardsButton.closest('[data-kt-music-cards-slider]');
+      const state = musicCardState.get(slider);
+      if (!slider || !state) return;
+      hideHintSoon();
+      syncMusicCardSlider(slider, state.index + (musicCardsButton.dataset.ktMusicCardsAction === 'next' ? 1 : -1));
+      return;
+    }
 
     if (navZone) {
       hideHintSoon();
@@ -415,11 +508,17 @@
   });
 
   viewer.addEventListener('touchstart', (event) => {
+    if (event.target.closest('[data-kt-nav-ignore]')) {
+      return;
+    }
     touchStartX = event.changedTouches[0].clientX;
     setPaused(true);
   });
 
   viewer.addEventListener('touchend', (event) => {
+    if (event.target.closest('[data-kt-nav-ignore]')) {
+      return;
+    }
     const delta = event.changedTouches[0].clientX - touchStartX;
     if (Math.abs(delta) > 45) {
       if (delta < 0) next();

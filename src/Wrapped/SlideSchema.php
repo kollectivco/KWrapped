@@ -92,7 +92,7 @@ final class SlideSchema
 			case 'music_top_cards':
 				return array(
 					'section_title' => __('On Repeat Right Now', 'kontentainment-wrapped'),
-					'subtitle'      => __('Three featured tracks setting the pace this week.', 'kontentainment-wrapped'),
+					'subtitle'      => __('A rotating stack of tracks setting the pace this week.', 'kontentainment-wrapped'),
 					'cards'         => array(
 						array(
 							'image_id'    => 0,
@@ -115,6 +115,13 @@ final class SlideSchema
 							'link'        => '',
 							'badge'       => __('Weekend', 'kontentainment-wrapped'),
 						),
+						array(
+							'image_id'    => 0,
+							'track_title' => __('Soft Frequency', 'kontentainment-wrapped'),
+							'artist_name' => __('North Arcade', 'kontentainment-wrapped'),
+							'link'        => '',
+							'badge'       => __('Late Night', 'kontentainment-wrapped'),
+						),
 					),
 				);
 			case 'music_chart_week':
@@ -126,6 +133,12 @@ final class SlideSchema
 						array('image_id' => 0, 'title' => __('Afterglow FM', 'kontentainment-wrapped'), 'subtitle' => __('The Gloss', 'kontentainment-wrapped'), 'trend_type' => 'same', 'trend_value' => ''),
 						array('image_id' => 0, 'title' => __('Sleepless Coast', 'kontentainment-wrapped'), 'subtitle' => __('Juno Lines', 'kontentainment-wrapped'), 'trend_type' => 'new', 'trend_value' => __('NEW', 'kontentainment-wrapped')),
 						array('image_id' => 0, 'title' => __('Blue Static', 'kontentainment-wrapped'), 'subtitle' => __('Rafi Cole', 'kontentainment-wrapped'), 'trend_type' => 'down', 'trend_value' => '-2'),
+						array('image_id' => 0, 'title' => __('Glass Horizon', 'kontentainment-wrapped'), 'subtitle' => __('Selene Vox', 'kontentainment-wrapped'), 'trend_type' => 'up', 'trend_value' => '+1'),
+						array('image_id' => 0, 'title' => __('Satellite Love', 'kontentainment-wrapped'), 'subtitle' => __('Omar Drift', 'kontentainment-wrapped'), 'trend_type' => 'same', 'trend_value' => ''),
+						array('image_id' => 0, 'title' => __('No Sleep / No Signal', 'kontentainment-wrapped'), 'subtitle' => __('The Violet Set', 'kontentainment-wrapped'), 'trend_type' => 'down', 'trend_value' => '-1'),
+						array('image_id' => 0, 'title' => __('Palm Line', 'kontentainment-wrapped'), 'subtitle' => __('June Radio', 'kontentainment-wrapped'), 'trend_type' => 'new', 'trend_value' => __('NEW', 'kontentainment-wrapped')),
+						array('image_id' => 0, 'title' => __('Magnetic Room', 'kontentainment-wrapped'), 'subtitle' => __('Cass Hale', 'kontentainment-wrapped'), 'trend_type' => 'up', 'trend_value' => '+2'),
+						array('image_id' => 0, 'title' => __('Rose Static', 'kontentainment-wrapped'), 'subtitle' => __('Mono Youth', 'kontentainment-wrapped'), 'trend_type' => 'same', 'trend_value' => ''),
 					),
 				);
 			case 'music_top_grid':
@@ -242,8 +255,8 @@ final class SlideSchema
 			'spotlight'    => __('Treat this like a hero profile with one standout angle.', 'kontentainment-wrapped'),
 			'quote'        => __('Write like an editorial pull quote, not a paragraph.', 'kontentainment-wrapped'),
 			'mosaic'       => __('Curate moments that feel varied but connected.', 'kontentainment-wrapped'),
-			'music_top_cards'  => __('Think of these as collectible music cards: bold image, clean title, sharp artist line.', 'kontentainment-wrapped'),
-			'music_chart_week' => __('Use movement, date range, and clear ranking to make the chart feel current.', 'kontentainment-wrapped'),
+			'music_top_cards'  => __('Build a rotating stack of music cards with enough items to feel alive, not fixed.', 'kontentainment-wrapped'),
+			'music_chart_week' => __('Treat this like a real Top 10 board with clear movement, tight labels, and strong rank hierarchy.', 'kontentainment-wrapped'),
 			'music_top_grid'   => __('Keep titles short so the two-column layout stays clean on mobile.', 'kontentainment-wrapped'),
 			'music_spotlight'  => __('Treat this like a cover star moment with one standout stat and one short reason why.', 'kontentainment-wrapped'),
 			'final_share'  => __('End with a clear emotional wrap-up and strong call to share or replay.', 'kontentainment-wrapped'),
@@ -299,6 +312,10 @@ final class SlideSchema
 
 		if ('music_chart_week' === $type && empty($slide['config']['items'])) {
 			$errors[] = __('Add chart rows for this week’s ranking.', 'kontentainment-wrapped');
+		}
+
+		if ('music_chart_week' === $type && count((array) ($slide['config']['items'] ?? array())) < 10) {
+			$errors[] = __('Top 10 chart slides should include 10 ranked rows.', 'kontentainment-wrapped');
 		}
 
 		if ('music_top_grid' === $type && count((array) ($slide['config']['items'] ?? array())) < 2) {

@@ -11,7 +11,9 @@
     if (!value) return value;
     return value.replace(/kt_wrapped_slides\[(\d+|{{INDEX}})\]/g, 'kt_wrapped_slides[' + index + ']')
       .replace(/kt_wrapped_background_(\d+|{{INDEX}})/g, 'kt_wrapped_background_' + index)
-      .replace(/kt_wrapped_background_preview_(\d+|{{INDEX}})/g, 'kt_wrapped_background_preview_' + index);
+      .replace(/kt_wrapped_background_preview_(\d+|{{INDEX}})/g, 'kt_wrapped_background_preview_' + index)
+      .replace(/\[(\d+|{{ITEM_INDEX}})\](?=\[(image_id|track_title|artist_name|link|badge)\])/g, '[' + index + ']')
+      .replace(/_(\d+|{{ITEM_INDEX}})(?=$)/g, '_' + index);
   }
 
   function updateSlideSummary(card) {
@@ -22,6 +24,32 @@
 
     card.find('.kt-wrapped-slide-card__title').text(title);
     card.find('.kt-wrapped-slide-card__summary').text(summary.length > 110 ? summary.slice(0, 110) + '…' : summary);
+  }
+
+  function updateCollectionIndices(collection) {
+    collection.find('[data-kt-collection-item]').each(function (index) {
+      const item = $(this);
+
+      item.find('[name]').each(function () {
+        const field = $(this);
+        field.attr('name', replaceIndexToken(field.attr('name'), index));
+      });
+
+      item.find('[id]').each(function () {
+        const field = $(this);
+        field.attr('id', replaceIndexToken(field.attr('id'), index));
+      });
+
+      item.find('[data-target]').each(function () {
+        const field = $(this);
+        field.attr('data-target', replaceIndexToken(field.attr('data-target'), index));
+      });
+
+      item.find('[data-preview]').each(function () {
+        const field = $(this);
+        field.attr('data-preview', replaceIndexToken(field.attr('data-preview'), index));
+      });
+    });
   }
 
   function updateSlideIndices() {
@@ -55,6 +83,10 @@
       card.find('[data-preview]').each(function () {
         const field = $(this);
         field.attr('data-preview', replaceIndexToken(field.attr('data-preview'), index));
+      });
+
+      card.find('[data-kt-collection]').each(function () {
+        updateCollectionIndices($(this));
       });
 
       updateSlideSummary(card);
@@ -156,6 +188,32 @@
     $(document).on('click', '.kt-wrapped-select-media', function (e) {
       e.preventDefault();
       openMediaFrame($(this));
+    });
+
+    $(document).on('click', '[data-kt-collection-add]', function (e) {
+      e.preventDefault();
+      const button = $(this);
+      const target = $('#' + button.attr('data-kt-collection-target'));
+      const card = button.closest('.kt-wrapped-slide-card');
+      const slideIndex = card.attr('data-slide-index');
+      const template = $('#tmpl-kt-wrapped-music-top-card-' + slideIndex).html();
+      if (!target.length || !template) return;
+
+      const itemIndex = target.find('[data-kt-collection-item]').length;
+      const html = template.replaceAll('{{ITEM_INDEX}}', itemIndex);
+      target.append($(html));
+      updateCollectionIndices(target);
+    });
+
+    $(document).on('click', '[data-kt-collection-remove]', function (e) {
+      e.preventDefault();
+      const collection = $(this).closest('[data-kt-collection]');
+      if (collection.find('[data-kt-collection-item]').length <= 1) {
+        return;
+      }
+
+      $(this).closest('[data-kt-collection-item]').remove();
+      updateCollectionIndices(collection);
     });
 
     $('#kt-wrapped-add-slide').on('click', function () {

@@ -398,37 +398,27 @@ final class MetaBoxes
 		}
 		?>
 		<div class="kt-wrapped-field kt-wrapped-field--wide">
-			<label><?php esc_html_e('Featured Cards', 'kontentainment-wrapped'); ?></label>
-			<div class="kt-wrapped-music-list">
+			<div class="kt-wrapped-collection-header">
+				<label><?php esc_html_e('Featured Cards', 'kontentainment-wrapped'); ?></label>
+				<button
+					type="button"
+					class="button button-secondary kt-wrapped-add-collection-item"
+					data-kt-collection-add
+					data-kt-collection-type="music-top-card"
+					data-kt-collection-target="kt_wrapped_music_top_cards_list_<?php echo esc_attr($key); ?>"
+				>
+					<?php esc_html_e('Add Card', 'kontentainment-wrapped'); ?>
+				</button>
+			</div>
+			<div class="kt-wrapped-music-list" id="kt_wrapped_music_top_cards_list_<?php echo esc_attr($key); ?>" data-kt-collection="music-top-card">
 				<?php foreach ($cards as $item_index => $card) : ?>
-					<?php
-					$image_id  = absint($card['image_id'] ?? 0);
-					$image_url = $image_id ? wp_get_attachment_image_url($image_id, 'medium') : '';
-					$target_id = 'kt_wrapped_music_top_cards_' . $key . '_' . $item_index;
-					$preview_id = 'kt_wrapped_music_top_cards_preview_' . $key . '_' . $item_index;
-					?>
-					<div class="kt-wrapped-music-item-card">
-						<div class="kt-wrapped-media-control" data-target="<?php echo esc_attr($target_id); ?>" data-preview="<?php echo esc_attr($preview_id); ?>">
-							<input type="hidden" id="<?php echo esc_attr($target_id); ?>" name="kt_wrapped_slides[<?php echo esc_attr($key); ?>][config][cards][<?php echo esc_attr((string) $item_index); ?>][image_id]" value="<?php echo esc_attr((string) $image_id); ?>" />
-							<div class="kt-wrapped-media-preview kt-wrapped-media-preview--compact" id="<?php echo esc_attr($preview_id); ?>">
-								<?php if ($image_url) : ?>
-									<img src="<?php echo esc_url($image_url); ?>" alt="" />
-								<?php else : ?>
-									<span><?php esc_html_e('Cover', 'kontentainment-wrapped'); ?></span>
-								<?php endif; ?>
-							</div>
-							<button type="button" class="button button-secondary kt-wrapped-select-media"><?php esc_html_e('Choose Cover', 'kontentainment-wrapped'); ?></button>
-						</div>
-						<div class="kt-wrapped-repeatable-row kt-wrapped-repeatable-row--music">
-							<input type="text" name="kt_wrapped_slides[<?php echo esc_attr($key); ?>][config][cards][<?php echo esc_attr((string) $item_index); ?>][track_title]" value="<?php echo esc_attr((string) ($card['track_title'] ?? '')); ?>" placeholder="<?php esc_attr_e('Track Title', 'kontentainment-wrapped'); ?>" />
-							<input type="text" name="kt_wrapped_slides[<?php echo esc_attr($key); ?>][config][cards][<?php echo esc_attr((string) $item_index); ?>][artist_name]" value="<?php echo esc_attr((string) ($card['artist_name'] ?? '')); ?>" placeholder="<?php esc_attr_e('Artist Name', 'kontentainment-wrapped'); ?>" />
-							<input type="url" name="kt_wrapped_slides[<?php echo esc_attr($key); ?>][config][cards][<?php echo esc_attr((string) $item_index); ?>][link]" value="<?php echo esc_attr((string) ($card['link'] ?? '')); ?>" placeholder="<?php esc_attr_e('Optional Link', 'kontentainment-wrapped'); ?>" />
-							<input type="text" name="kt_wrapped_slides[<?php echo esc_attr($key); ?>][config][cards][<?php echo esc_attr((string) $item_index); ?>][badge]" value="<?php echo esc_attr((string) ($card['badge'] ?? '')); ?>" placeholder="<?php esc_attr_e('Badge', 'kontentainment-wrapped'); ?>" />
-						</div>
-					</div>
+					<?php $this->render_music_top_card_item($key, $item_index, $card); ?>
 				<?php endforeach; ?>
 			</div>
-			<p class="description"><?php esc_html_e('Use three concise cards that feel collectible and easy to scan.', 'kontentainment-wrapped'); ?></p>
+			<script type="text/html" id="tmpl-kt-wrapped-music-top-card-<?php echo esc_attr($key); ?>">
+				<?php $this->render_music_top_card_item($key, 999, array(), true); ?>
+			</script>
+			<p class="description"><?php esc_html_e('Add as many cards as you need. The viewer will present them as a swipeable story carousel.', 'kontentainment-wrapped'); ?></p>
 		</div>
 		<?php
 	}
@@ -474,7 +464,41 @@ final class MetaBoxes
 					</div>
 				<?php endforeach; ?>
 			</div>
-			<p class="description"><?php esc_html_e('Keep titles short and use trend movement sparingly to keep the chart legible.', 'kontentainment-wrapped'); ?></p>
+			<p class="description"><?php esc_html_e('This slide is designed as a Top 10 board. Keep all ten rows populated for the strongest result.', 'kontentainment-wrapped'); ?></p>
+		</div>
+		<?php
+	}
+
+	private function render_music_top_card_item(string $key, int $item_index, array $card, bool $is_template = false): void
+	{
+		$image_id   = absint($card['image_id'] ?? 0);
+		$image_url  = $image_id ? wp_get_attachment_image_url($image_id, 'medium') : '';
+		$row_index  = $is_template ? '{{ITEM_INDEX}}' : (string) $item_index;
+		$target_id  = 'kt_wrapped_music_top_cards_' . $key . '_' . $row_index;
+		$preview_id = 'kt_wrapped_music_top_cards_preview_' . $key . '_' . $row_index;
+		?>
+		<div class="kt-wrapped-music-item-card" data-kt-collection-item>
+			<div class="kt-wrapped-music-item-card__header">
+				<strong><?php esc_html_e('Music Card', 'kontentainment-wrapped'); ?></strong>
+				<button type="button" class="button-link-delete kt-wrapped-remove-collection-item" data-kt-collection-remove><?php esc_html_e('Remove', 'kontentainment-wrapped'); ?></button>
+			</div>
+			<div class="kt-wrapped-media-control" data-target="<?php echo esc_attr($target_id); ?>" data-preview="<?php echo esc_attr($preview_id); ?>">
+				<input type="hidden" id="<?php echo esc_attr($target_id); ?>" name="kt_wrapped_slides[<?php echo esc_attr($key); ?>][config][cards][<?php echo esc_attr($row_index); ?>][image_id]" value="<?php echo esc_attr((string) $image_id); ?>" />
+				<div class="kt-wrapped-media-preview kt-wrapped-media-preview--compact" id="<?php echo esc_attr($preview_id); ?>">
+					<?php if ($image_url) : ?>
+						<img src="<?php echo esc_url($image_url); ?>" alt="" />
+					<?php else : ?>
+						<span><?php esc_html_e('Cover', 'kontentainment-wrapped'); ?></span>
+					<?php endif; ?>
+				</div>
+				<button type="button" class="button button-secondary kt-wrapped-select-media"><?php esc_html_e('Choose Cover', 'kontentainment-wrapped'); ?></button>
+			</div>
+			<div class="kt-wrapped-repeatable-row kt-wrapped-repeatable-row--music">
+				<input type="text" name="kt_wrapped_slides[<?php echo esc_attr($key); ?>][config][cards][<?php echo esc_attr($row_index); ?>][track_title]" value="<?php echo esc_attr((string) ($card['track_title'] ?? '')); ?>" placeholder="<?php esc_attr_e('Track Title', 'kontentainment-wrapped'); ?>" />
+				<input type="text" name="kt_wrapped_slides[<?php echo esc_attr($key); ?>][config][cards][<?php echo esc_attr($row_index); ?>][artist_name]" value="<?php echo esc_attr((string) ($card['artist_name'] ?? '')); ?>" placeholder="<?php esc_attr_e('Artist Name', 'kontentainment-wrapped'); ?>" />
+				<input type="url" name="kt_wrapped_slides[<?php echo esc_attr($key); ?>][config][cards][<?php echo esc_attr($row_index); ?>][link]" value="<?php echo esc_attr((string) ($card['link'] ?? '')); ?>" placeholder="<?php esc_attr_e('Optional Link', 'kontentainment-wrapped'); ?>" />
+				<input type="text" name="kt_wrapped_slides[<?php echo esc_attr($key); ?>][config][cards][<?php echo esc_attr($row_index); ?>][badge]" value="<?php echo esc_attr((string) ($card['badge'] ?? '')); ?>" placeholder="<?php esc_attr_e('Badge', 'kontentainment-wrapped'); ?>" />
+			</div>
 		</div>
 		<?php
 	}

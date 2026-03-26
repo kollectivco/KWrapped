@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.0] - 2026-03-26
+
+### Changed
+- Moved the Wrapped admin builder to a light-default editing surface for clearer day-to-day authoring.
+
+### Added
+- Dynamic add/remove card authoring for Music Top Cards.
+- Carousel behavior for Music Top Cards inside the Wrapped viewer with manual controls, swipe support, and autoplay.
+
+### Improved
+- Music Chart Week now defaults to a Top 10 chart structure and renders as a stronger editorial chart board.
+
 ## [1.1.0] - 2026-03-25
 
 ### Added

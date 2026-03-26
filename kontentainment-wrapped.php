@@ -3,7 +3,7 @@
  * Plugin Name: Kontentainment Wrapped
  * Plugin URI: https://github.com/kollectivco/KWrapped
  * Description: Premium story-driven wrapped editions for WordPress.
- * Version: 1.2.1
+ * Version: 1.2.2
  * Author: Codex
  * Update URI: https://github.com/kollectivco/KWrapped
  * Text Domain: kontentainment-wrapped
@@ -15,13 +15,19 @@ if (! defined('ABSPATH')) {
 	exit;
 }
 
-define('KT_WRAPPED_VERSION', '1.2.1');
-define('KT_WRAPPED_FILE', __FILE__);
-define('KT_WRAPPED_PATH', plugin_dir_path(__FILE__));
-define('KT_WRAPPED_URL', plugin_dir_url(__FILE__));
-define('KT_WRAPPED_BASENAME', plugin_basename(__FILE__));
-define('KT_WRAPPED_GITHUB_REPO', 'kollectivco/KWrapped');
-define('KT_WRAPPED_UPDATE_URI', 'https://github.com/kollectivco/KWrapped');
+if (defined('KT_WRAPPED_FILE')) {
+	return;
+}
+
+defined('KT_WRAPPED_VERSION') || define('KT_WRAPPED_VERSION', '1.2.2');
+defined('KT_WRAPPED_FILE') || define('KT_WRAPPED_FILE', __FILE__);
+defined('KT_WRAPPED_PATH') || define('KT_WRAPPED_PATH', plugin_dir_path(__FILE__));
+defined('KT_WRAPPED_URL') || define('KT_WRAPPED_URL', plugin_dir_url(__FILE__));
+defined('KT_WRAPPED_BASENAME') || define('KT_WRAPPED_BASENAME', plugin_basename(__FILE__));
+defined('KT_WRAPPED_SLUG') || define('KT_WRAPPED_SLUG', 'kontentainment-wrapped');
+defined('KT_WRAPPED_CANONICAL_BASENAME') || define('KT_WRAPPED_CANONICAL_BASENAME', 'kontentainment-wrapped/kontentainment-wrapped.php');
+defined('KT_WRAPPED_GITHUB_REPO') || define('KT_WRAPPED_GITHUB_REPO', 'kollectivco/KWrapped');
+defined('KT_WRAPPED_UPDATE_URI') || define('KT_WRAPPED_UPDATE_URI', 'https://github.com/kollectivco/KWrapped');
 
 spl_autoload_register(
 	static function (string $class): void {

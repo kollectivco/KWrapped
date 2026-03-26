@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.2] - 2026-03-26
+
+### Fixed
+- Prevented duplicate constant warnings when multiple copies of the plugin are present on disk.
+- Fixed GitHub updater auto-update filter compatibility when WordPress passes `null`.
+
+### Improved
+- Hardened canonical plugin slug handling for plugin details and update metadata.
+- Added an admin warning when the active plugin is running from a non-canonical folder name.
+
 ## [1.2.1] - 2026-03-26
 
 ### Added

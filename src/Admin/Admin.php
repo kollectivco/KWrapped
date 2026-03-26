@@ -14,6 +14,7 @@ final class Admin
 		add_action('admin_head', array($this, 'admin_head'));
 		add_action('admin_action_kt_wrapped_check_updates', array($this, 'handle_manual_update_check'));
 		add_action('admin_notices', array($this, 'render_update_notice'));
+		add_action('admin_notices', array($this, 'render_location_notice'));
 	}
 
 	public function menu(): void
@@ -267,6 +268,34 @@ final class Admin
 		<div class="notice <?php echo esc_attr($class); ?> is-dismissible">
 			<p><strong><?php esc_html_e('Kontentainment Wrapped updates', 'kontentainment-wrapped'); ?></strong></p>
 			<p><?php echo esc_html($message); ?></p>
+		</div>
+		<?php
+	}
+
+	public function render_location_notice(): void
+	{
+		if (! current_user_can('activate_plugins')) {
+			return;
+		}
+
+		if (dirname(KT_WRAPPED_BASENAME) === KT_WRAPPED_SLUG) {
+			return;
+		}
+		?>
+		<div class="notice notice-warning">
+			<p><strong><?php esc_html_e('Kontentainment Wrapped plugin location warning', 'kontentainment-wrapped'); ?></strong></p>
+			<p>
+				<?php
+				echo esc_html(
+					sprintf(
+						/* translators: 1: current plugin basename 2: canonical plugin basename */
+						__('This copy is running from %1$s, but the canonical plugin location is %2$s. Remove duplicate or renamed plugin folders after confirming the correct copy is active.', 'kontentainment-wrapped'),
+						KT_WRAPPED_BASENAME,
+						KT_WRAPPED_CANONICAL_BASENAME
+					)
+				);
+				?>
+			</p>
 		</div>
 		<?php
 	}

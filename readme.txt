@@ -1,6 +1,6 @@
 === Kontentainment Wrapped ===
 Contributors: kollectivco
-Stable tag: 1.2.1
+Stable tag: 1.2.2
 Requires at least: 6.0
 Tested up to: 6.6
 Requires PHP: 7.4
@@ -20,6 +20,11 @@ Kontentainment Wrapped is a standalone WordPress plugin for creating curated, st
 3. Open `Kontentainment Wrapped` in the WordPress admin.
 
 == Changelog ==
+
+= 1.2.2 =
+* Added duplicate-load guards in the plugin bootstrap to prevent constant redefinition warnings.
+* Fixed auto-update hook compatibility when WordPress passes null.
+* Hardened canonical plugin identity handling for updater safety.
 
 = 1.2.1 =
 * Added a manual Check for Updates flow in the plugin admin.

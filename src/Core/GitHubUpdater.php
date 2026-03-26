@@ -53,7 +53,7 @@ final class GitHubUpdater
 
 	public function plugins_api($result, string $action, object $args)
 	{
-		if ('plugin_information' !== $action || empty($args->slug) || dirname(KT_WRAPPED_BASENAME) !== $args->slug) {
+		if ('plugin_information' !== $action || empty($args->slug) || KT_WRAPPED_SLUG !== $args->slug) {
 			return $result;
 		}
 
@@ -275,7 +275,7 @@ final class GitHubUpdater
 		return $actions;
 	}
 
-	public function respect_auto_updates(bool $update, $item): bool
+	public function respect_auto_updates($update, $item)
 	{
 		if (is_object($item) && ! empty($item->plugin) && KT_WRAPPED_BASENAME === $item->plugin) {
 			return $update;
@@ -292,7 +292,7 @@ final class GitHubUpdater
 
 		$plugin              = new \stdClass();
 		$plugin->id          = KT_WRAPPED_UPDATE_URI;
-		$plugin->slug        = dirname(KT_WRAPPED_BASENAME);
+		$plugin->slug        = KT_WRAPPED_SLUG;
 		$plugin->plugin      = KT_WRAPPED_BASENAME;
 		$plugin->new_version = (string) $release['version'];
 		$plugin->version     = (string) $release['version'];
